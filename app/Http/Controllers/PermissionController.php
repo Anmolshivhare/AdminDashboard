@@ -2,19 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\PermissionDataTable;
+use App\Interfaces\PermissionRepositoryInterface;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use DB;
 use Exception;
 
+use function Termwind\render;
+
 class PermissionController extends Controller
 {
+    public $permissionRepository;
+
+    public function __construct(PermissionRepositoryInterface $permissionRepository)
+    {
+        $this->permissionRepository = $permissionRepository;
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(PermissionDataTable $dataTable)
     {
-        return view('permission');
+        return $dataTable->render('permission.index');
     }
 
     /**
@@ -22,13 +32,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        $childPermissions = Permission::all();
-        $parentPermissions = $childPermissions->whereNull('parent_id');
-        $permissions =  [
-            'parents' => $parentPermissions,
-            'children' => $childPermissions,
-        ];
-
+        $permissions = $this->permissionRepository->getAllPermissions();
         return view('permission.create', compact('permissions'));
     }
 

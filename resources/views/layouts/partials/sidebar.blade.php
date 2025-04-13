@@ -64,6 +64,39 @@
                 </div>
             </li>
             {{-- product Menu End --}}
+
+            {{-- Users Menu Start --}}
+                <li class="nav-item tansition-opacity p-3" id="usersMenu">
+                    <a class="nav-link p-0  d-flex align-items-center dropdown-toggle" href="#"
+                        data-bs-toggle="collapse" data-bs-target="#userSubmenu" aria-expanded="false"
+                        aria-controls="userSubmenu">
+                        <span class="sidebar-menus-list-item-img">
+                            <i class="fa fa-dashboard fs-5"></i>
+                        </span> <span
+                            class="ms-2  d-lg-inline tansition-opacity">{{ __('labels.users') }}</span>
+                    </a>
+                    {{-- Users Dropdown Start --}}
+                    <ul id="userSubmenu" class="accordion-collapse collapse list-group list-group-flush pt-2">
+                        {{-- @can('role-list') --}}
+                        <li class="list-group-item bg-transparent"><a
+                                class="dropdown-item   ms-2  tansition-opacity"
+                                href="">{{ __('labels.roles') }}</a></li>
+                        {{-- @endcan --}}
+                        {{-- @can('permission-list') --}}
+                        <li class="list-group-item bg-transparent"><a
+                                class="dropdown-item   ms-2  tansition-opacity"
+                                href="{{ route('permissions.index') }}">{{ __('labels.permissions') }}</a></li>
+                        {{-- @endcan --}}
+                        {{-- @can('user-list') --}}
+                        <li class="list-group-item bg-transparent"><a
+                                class="dropdown-item   ms-2  tansition-opacity"
+                                href="{{ route('users.index') }}">{{ __('labels.admin_user') }}</a></li>
+                        {{-- @endcan --}}
+                    </ul>
+                    {{-- Users Dropdown End --}}
+                </li>
+            {{-- Users Menu End --}}
+
             {{-- Shop Menu End --}}
  
             <li
