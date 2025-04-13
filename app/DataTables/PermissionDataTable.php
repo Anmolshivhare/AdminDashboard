@@ -23,7 +23,13 @@ class PermissionDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addIndexColumn()
-            ->addColumn('action', 'permission.action')
+            ->addColumn('action', function ($row) {
+                $id = encrypt($row->id);
+                $editRoute = route('permissions.edit', $id);
+                $deleteRoute = route('permissions.destroy', $id);
+                return view('layouts.datatable-action-button', compact('editRoute', 'deleteRoute'));
+            })
+
             ->setRowId('id');
     }
 
@@ -32,7 +38,7 @@ class PermissionDataTable extends DataTable
      */
     public function query(Permission $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->orderBy('id','desc');
     }
 
     /**

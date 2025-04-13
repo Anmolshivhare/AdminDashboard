@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 @section('title')
 {{ __('labels.edit_permission') }}
 @endsection
@@ -8,7 +8,7 @@
             <div class="flex-row-reverse gap-4 pb-2 mb-3 d-flex justify-content-end align-items-center">
                 <h1 class="mb-0 page-title">{{ __('labels.edit_permission') }}</h1>
                 <a class="btn btn-secondary back-link-padding back-btn rounded-cirlce"
-                    href="{{ route('admin.permissions.index') }}">
+                    href="{{ route('permissions.index') }}">
                     <i class="fa-solid fa-arrow-left-long"></i>
                 </a>
             </div>
@@ -22,7 +22,7 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    <form class="row g-3" action="{{ route('admin.permissions.update', $permission->id) }}" method="post">
+                    <form class="row g-3" action="{{ route('permissions.update', encrypt($permission->id)) }}" method="post">
                         @csrf
                         @method('PUT')
                         <div class="col-6">

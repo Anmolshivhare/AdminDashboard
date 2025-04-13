@@ -114,6 +114,10 @@ class PermissionRepository implements PermissionRepositoryInterface
 
     public function getPermissionDataFormRequest($requestData){
 
+        return $requestData->only([
+            'name',
+            'parent'
+        ]);
     }
 
 }

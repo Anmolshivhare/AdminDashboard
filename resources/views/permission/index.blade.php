@@ -9,18 +9,8 @@
 		<a href="{{route('permissions.create')}}" class="btn btn-primary px-4 py-2  mx-3">create</a>
 	</div>
 
-	@if (session('message'))
-					<div class="alert alert-success alert-dismissible fade show mx-4 mb-0 mt-3" role="alert">
-						{{ session('message') }}
-						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-					</div>
-	@endif
-	@if (session('error'))
-					<div class="alert alert-danger alert-dismissible fade show mx-4 mb-0 mt-3" role="alert">
-						{{ session('error') }}
-						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-					</div>
-	@endif
+	 
+	
 <div class="col-md-12 divide-y-1 dashboard-card-main-col">
 	<div class="row">
 		<div class="col-12">
@@ -28,6 +18,12 @@
 				@if (session('message'))
 					<div class="alert alert-success alert-dismissible fade show mx-4 mb-0 mt-3" role="alert">
 						{{ session('message') }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				@endif
+				@if (session('error'))
+					<div class="alert alert-danger alert-dismissible fade show mx-4 mb-0 mt-3" role="alert">
+						{{ session('error') }}
 						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 					</div>
 				@endif

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\PermissionDataTable;
+use App\Http\Requests\Permission\CreatePermissionRequest;
+use App\Http\Requests\Permission\UpdatePermissionRequest;
 use App\Interfaces\PermissionRepositoryInterface;
 use App\Models\Permission;
 use Illuminate\Http\Request;
@@ -39,33 +41,12 @@ class PermissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreatePermissionRequest $request)
     {
-        $permissionName = $request->validate([
-            'name' => 'required|unique:permissions,name',
-            'parent'=>'nullable',
-        ]);
+        $requestData = $this->permissionRepository->getPermissionDataFormRequest($request);
         try {
             DB::beginTransaction();
-            
-            $permission = Permission::create([
-                'guard_name' => 'web',
-                'name' => $permissionName['name']
-            ]);
-            if (isset($permissionName['parent']) && $permissionName['parent'] != 'none') {
-                $parent = Permission::find($permissionName['parent']);
-                if ($parent) {
-                    $parent->appendNode($permission);
-                }
-            }
-            if (isset($permissionName['children']) && is_array($permissionName['children'])) {
-                foreach ($permissionName['children'] as $childId) {
-                    $child = Permission::find($childId);
-                    if ($child) {
-                        $permission->appendNode($child);
-                    }
-                }
-            }
+            $this->permissionRepository->createPermission($requestData);
             DB::commit();
 
             return redirect()
@@ -76,11 +57,8 @@ class PermissionController extends Controller
 
             return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
-        
     }
 
-
-   
 
     /**
      * Display the specified resource.
@@ -95,15 +73,27 @@ class PermissionController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $permission = $this->permissionRepository->getPermissionById(decrypt($id));
+        $permissions = $this->permissionRepository->getAllPermissions();
+        return view('permission.edit', compact('permission', 'permissions'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePermissionRequest $request, string $id)
     {
-        //
+        $requestData = $this->permissionRepository->getPermissionDataFormRequest($request);
+        try {
+            DB::beginTransaction();
+            $this->permissionRepository->updatePermission(decrypt($id), $requestData);
+            DB::commit();
+            return redirect()
+                ->route('permissions.index')
+                ->with('message', trans('app.permissions.updated'));
+        } catch (Exception $exception) {
+            return redirect()->back()->with('error', $exception->getMessage())->withInput();
+        }
     }
 
     /**
