@@ -92,11 +92,31 @@
                                             @enderror
                                         </div>
                                         @if($userData->profile_pic)
-                                        <img src="{{asset('uploads/profile/' . $userData->profile_pic)}}" width="100" height="100" class="img-thumbnail">
+                                        <img src="{{asset('uploads/profile/' . $userData->profile_pic)}}" width="100"  class="img-thumbnail rounded-circle" style="height: 150px">
                                         @else
                                         <img src="{{ asset('uploads/profile/user.png') }}" width="50" height="50" class="img-thumbnail rounded-circle">
                                         @endif
-                                    </div>  
+                                    </div>
+                                    
+                                    <div class="col-6">
+                                        <label for="role" class="form-label">{{ __('labels.role') }}</label>
+                                        <select id="role" name="role"
+                                            class="form-select
+                                        @error('role') is-invalid @enderror">
+                                            <option value="">{{ __('labels.select_role') }}</option>
+                                            @foreach ($roles as $role)
+                                                <option value="{{ $role->id }}"
+                                                    {{ !empty($userRole->id) && $userRole->id == $role->id ? 'selected="selected"' : '' }}>
+                                                    {{ ucwords($role->name) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('role')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>  
  
                                 <button class="btn btn-primary fs-5 mt-3" type="submit">

@@ -185,4 +185,74 @@ window.onload = function() {
     window.onkeydown = resetInactivityTimer; // Reset on key press
 };
 
- 
+ //role and permission nestedtree
+document.addEventListener("DOMContentLoaded", function () {
+    // When a parent checkbox is clicked, toggle its child checkboxes
+    document
+      .querySelectorAll(".parent-checkbox")
+      .forEach(function (parentCheckbox) {
+        parentCheckbox.addEventListener("change", function () {
+          let parentId = this.value;
+          let childCheckboxes = document.querySelectorAll(
+            'input.child-checkbox[data-parent-id="' + parentId + '"]'
+          );
+  
+          // Check or uncheck all child checkboxes based on the parent checkbox
+          childCheckboxes.forEach(function (childCheckbox) {
+            childCheckbox.checked = parentCheckbox.checked;
+          });
+  
+          // Check/uncheck "Select All" if necessary
+          updateSelectAllStatus();
+        });
+      });
+  
+    // "Select All" checkbox functionality
+    let selectAllCheckbox = document.getElementById("select-all");
+    if (selectAllCheckbox) {
+      selectAllCheckbox.addEventListener("change", function () {
+        let allCheckboxes = document.querySelectorAll(
+          ".parent-checkbox, .child-checkbox"
+        );
+        allCheckboxes.forEach(function (checkbox) {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+      });
+    }
+  
+    // Function to update "Select All" checkbox based on individual selections
+    function updateSelectAllStatus() {
+      let allCheckboxes = document.querySelectorAll(
+        ".parent-checkbox, .child-checkbox"
+      );
+      let allChecked = Array.from(allCheckboxes).every(function (checkbox) {
+        return checkbox.checked;
+      });
+      selectAllCheckbox.checked = allChecked;
+    }
+  
+    // Ensure "Select All" is updated if any individual checkbox is manually changed
+    document
+      .querySelectorAll(".child-checkbox")
+      .forEach(function (childCheckbox) {
+        childCheckbox.addEventListener("change", function () {
+          // Get the parent checkbox associated with this child
+          let parentId = this.getAttribute("data-parent-id");
+          let parentCheckbox = document.querySelector(
+            'input.parent-checkbox[value="' + parentId + '"]'
+          );
+          // If any child is checked, ensure the parent iimport { Calendar } from '@fullcalendar/core';
+          let childCheckboxes = document.querySelectorAll(
+            'input.child-checkbox[data-parent-id="' + parentId + '"]'
+          );
+          let anyChildChecked = Array.from(childCheckboxes).some(function (
+            child
+          ) {
+            return child.checked;
+          });
+          parentCheckbox.checked = anyChildChecked;
+          // Update "Select All" checkbox status
+          updateSelectAllStatus();
+        });
+      });
+  });

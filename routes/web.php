@@ -5,6 +5,7 @@ use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductPriceController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 
@@ -18,6 +19,7 @@ Route::get('/logout', function () {
 Route::resource('product-prices', ProductPriceController::class);
 Route::resource('products',ProductController::class);
 Route::resource('permissions',PermissionController::class);
+Route::resource('roles',RoleController::class);
 Route::post('/search/data', [ProductController::class, 'searchData'])->name('search.data');
 Route::get('/products/data', [ProductController::class, 'data'])->name('products.data');
  
