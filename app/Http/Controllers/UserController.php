@@ -22,6 +22,11 @@ class UserController extends Controller
     {
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
+        $this->middleware(['permission:user-list'], ['only' => ['index']]);
+        $this->middleware(['permission:user-create'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:user-edit'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:user-delete'], ['only' => ['destroy']]);
+        $this->middleware(['permission:user-show'], ['only' => ['show']]);
     }
     /**
      * Display a listing of the resource.
@@ -35,8 +40,9 @@ class UserController extends Controller
     {
         $userId = auth()->user()->id;
         $roles = $this->roleRepository->getAllRoles();
-        $userData = User::find($userId);
-        return view('auth.profile', compact('roles', 'userData'));
+        $userData =  $this->userRepository->getDataById($userId);
+        $userRole = $userData->roles->first();
+        return view('auth.profile', compact('roles', 'userRole', 'userData'));
     }
 
     /**
@@ -96,12 +102,6 @@ class UserController extends Controller
             }
             $roleId = (int) $requestData['role'];
             $user->assignRole($roleId);
-
-            // $userRole = $user->roles->first();
-            // if ($userRole) {
-            //     $user->removeRole($userRole);
-            // }
-            // $user->assignRole($roleId);
             DB::commit();
             return redirect()->back()->with('message', 'Profile Update Successfully');
         } catch (Exception $exception) {

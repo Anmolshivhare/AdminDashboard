@@ -21,11 +21,9 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function updateData(string $id, array $updatedData)
     {
-        $record = $this->getDataById($id);
-        if ($record) {
-            return $record->update($updatedData);
-        }
-        return null;
+        $data = $this->model::findOrFail($id);
+        $data->update($updatedData);
+        return $data;
     }
 
     public function getDataById(string $id)

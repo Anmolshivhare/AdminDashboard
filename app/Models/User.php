@@ -9,11 +9,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Scout\Searchable;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,LogsActivity,Searchable;
+    use HasFactory, Notifiable,LogsActivity,Searchable,HasRoles;
 
      /**
      * Get the name of the index associated with the model.

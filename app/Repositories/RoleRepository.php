@@ -48,10 +48,16 @@ class RoleRepository implements RoleRepositoryInterface
      */
     public function createRole(array $roleName, $permissions)
     {
-        $role = Role::create(['guard_name' => 'web', 'name' => $roleName['name']]);
+        // Check if the role already exists
+        $role = Role::firstOrCreate(
+            ['guard_name' => 'web', 'name' => $roleName['name']] // If it doesn't exist, create this role
+        );
+
+        // Attach permissions if provided
         if (!empty($permissions)) {
-            $role->permissions()->sync($permissions);
+            $role->permissions()->sync($permissions); // Sync ensures no duplicates, and replaces existing ones
         }
+
         return $role;
     }
 
