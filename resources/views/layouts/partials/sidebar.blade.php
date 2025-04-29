@@ -20,7 +20,7 @@
                     </a>
                 @else
                     <a href="{{ route('profile.update') }}" class="m-auto w-75">
-                        <img src="" alt="User-Profile"
+                        <img src="{{ Vite::asset(DEFAULT_PROFILE_IMAGE) }}" alt="User-Profile"
                             class="img-fluid m-auto transition-x d-block border border-primary rounded-circle partial-logo auth-img" />
                     </a>
                 @endif
@@ -74,7 +74,7 @@
                         <span class="sidebar-menus-list-item-img">
                             <i class="fa fa-dashboard fs-5"></i>
                         </span> <span
-                            class="ms-4  d-lg-inline tansition-opacity">{{ __('labels.users') }}</span>
+                            class="ms-4  d-lg-inline tansition-opacity">{{ __('User Manage...') }}</span>
                     </a>
                     {{-- Users Dropdown Start --}}
                     <ul id="userSubmenu" class="accordion-collapse collapse list-group list-group-flush pt-2">
@@ -128,7 +128,7 @@
             {{-- product profile --}}
 
             {{-- Shop Menu End --}}
-            <li
+            {{-- <li
                 class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item  p-3">
                 <span class="sidebar-menus-list-item-img">
                     <i class="fa fa-user fs-5"></i>
@@ -138,7 +138,7 @@
                         href="{{ route('profile.update') }}" title="User">
                         {{ __('User') }} </a>
                 </div>
-            </li>
+            </li> --}}
             {{-- Shop Menu End --}}
              
  

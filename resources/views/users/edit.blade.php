@@ -40,7 +40,7 @@
                                 <div class="row mb-0">
                                     <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
                                         <label class="form-label text-dark"
-                                            for="name">{{ __('Name') }}
+                                            for="first_name">{{ __('Name') }}
                                         </label>
                                         <div class="input-group">
                                             <input

@@ -24,8 +24,9 @@ class UsersDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
-                $editRoute = route('users.edit', $row->id);
-                $deleteRoute = route('users.destroy', $row->id);
+                $id = encrypt($row->id);
+                $editRoute = route('users.edit', $id);
+                $deleteRoute = route('users.destroy', $id);
                 return view('layouts.datatable-action-button', compact('editRoute', 'deleteRoute'));
             })
             ->setRowId('id');
@@ -36,7 +37,7 @@ class UsersDataTable extends DataTable
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->orderBy('id', 'desc');
     }
 
     /**
@@ -45,20 +46,49 @@ class UsersDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('users-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('users-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
+
+        // $createLead = auth()->user()->can('user-create');
+        // return $this->builder()
+        //     ->setTableId('users')
+        //     ->columns($this->getColumns())
+        //     ->minifiedAjax()
+        //     ->parameters([
+        //         'processing' => true,
+        //         'serverSide' => true,
+        //         'language' => [
+        //             'searchPlaceholder' => 'Search..',
+        //         ],
+        //         'buttons' => array_merge(
+        //             $createLead ? [
+        //                 [
+        //                     'extend' => 'add',
+        //                     'text' => __('buttons.create'),
+        //                     'attr' => ['class' => 'btn btn-primary'],
+        //                 ]
+        //             ] : [],
+        //             [
+        //                 [
+        //                     'extend' => 'excel',
+        //                     'text' => __('buttons.export_to_excel'),
+        //                     'attr' => ['class' => 'btn btn-primary']
+        //                 ]
+        //             ]
+        //         ),
+        //     ]);
     }
 
     /**
@@ -67,11 +97,10 @@ class UsersDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+            Column::computed('DT_RowIndex')
+                ->title('id')
+                ->width(50)
+                ->addClass('text-center'),
             Column::make('name'),
             Column::make('email'),
             Column::make('created_at'),

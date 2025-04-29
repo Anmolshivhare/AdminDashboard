@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('title')
-    {{ __('labels.edit_user') }}
+    {{ __('labels.create_user') }}
 @endsection
 @section('content')
 <div class=" admin-profile-screen px-sm-4">
     <div class="  gap-2 align-items-center mb-4 pb-2">
-        <!-- <h3 class="page-title">{{ __('labels.user_profile') }}</h3> -->
+        <h3 class="page-title">{{ __('labels.create_user') }}</h3>
 
         @if (session('message'))
             <div class="alert alert-success alert-dismissible fade show mx-4 mb-0 mt-3" role="alert">
@@ -23,7 +23,7 @@
                     <div class="col-md-12">
                         <div
                             class="d-flex flex-row pb-4 py-4 px-6 border-bottom border-1 bg-white gap-3 justify-content-between align-items-center">
-                            <h3 class="mb-0 fw-bold ms-4">Edit Profile</h3>
+                            <h3 class="mb-0 fw-bold ms-4">{{__('labels.create_user')}}</h3>
                         </div>
                     </div>
                 </div>
@@ -31,23 +31,22 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <form method="POST" action="{{route('users.update',$userData->id)}}" class="px-2"
+                            <form method="POST" action="{{route('users.store')}}" class="px-2"
                                 enctype="multipart/form-data">
-                                @method('put')
                                 @csrf
                                 <input type="hidden" name="url" value="profile-update">
                               
                                 <div class="row mb-0">
                                     <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
                                         <label class="form-label text-dark"
-                                            for="name">{{ __('Name') }}
+                                            for="first_name">{{ __('Name') }}
                                         </label>
                                         <div class="input-group">
                                             <input
                                                 class="form-control
                                         @error('name') is-invalid @enderror"
                                                 name="name" type="text" id=""
-                                                value="{{$userData->name}}"
+                                                value="{{old('name')}}"
                                                 placeholder="{{ __('name') }}" />
                                             @error('name')
                                                 <span class="invalid-feedback" role="alert">
@@ -65,8 +64,8 @@
                                                 class="form-control
                                         @error('email') is-invalid @enderror"
                                                 name="email" type="text" id=""
-                                                value="{{$userData->email}}"
-                                                placeholder="{{ __('Email') }}" readonly />
+                                                value="{{old('email')}}"
+                                                placeholder="{{ __('Email') }}"/>
                                             @error('email')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -74,6 +73,26 @@
                                             @enderror
                                         </div>
                                     </div>
+
+                                    <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
+                                        <label class="form-label text-dark"
+                                            for="password">{{ __('labels.password') }}
+                                        </label>
+                                        <div class="input-group">
+                                            <input
+                                                class="form-control
+                                        @error('password') is-invalid @enderror"
+                                                name="password" type="password" id=""
+                                                value="{{old('password')}}"
+                                                placeholder="{{ __('password') }}"/>
+                                            @error('password')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
                                     <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
                                         <label class="form-label text-dark"
                                             for="profile_pic">{{ __('Profile') }}
@@ -82,7 +101,7 @@
                                             <input
                                                 class="form-control @error('profile_pic') is-invalid @enderror"
                                                 name="profile_pic" type="file"
-                                                value="{{$userData->profile_pic}}"
+                                                value="{{old('profile_pic')}}"
                                                 placeholder="{{ __('profile_pic') }}" accept="image/*" />
                                                   
                                             @error('profile_pic')
@@ -91,11 +110,7 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        @if($userData->profile_pic)
-                                        <img src="{{asset('uploads/profile/' . $userData->profile_pic)}}" width="100"  class="img-thumbnail rounded-circle" style="height: 150px">
-                                        @else
-                                        <img src="{{ asset('uploads/profile/user.png') }}" width="50" height="50" class="img-thumbnail rounded-circle">
-                                        @endif
+                                        
                                     </div>
                                     
                                     <div class="col-6">
@@ -106,7 +121,7 @@
                                             <option value="">{{ __('labels.select_role') }}</option>
                                             @foreach ($roles as $role)
                                                 <option value="{{ $role->id }}"
-                                                    {{ !empty($userRole->id) && $userRole->id == $role->id ? 'selected="selected"' : '' }}>
+                                                    {{ old('role') == $role->id ? 'selected="selected"' : '' }}>
                                                     {{ ucwords($role->name) }}
                                                 </option>
                                             @endforeach
@@ -120,7 +135,7 @@
                                 </div>  
  
                                 <button class="btn btn-primary fs-5 mt-3" type="submit">
-                                    {{ __('update') }}
+                                    {{ __('buttons.create') }}
                                 </button>
                             </form>
                         </div>

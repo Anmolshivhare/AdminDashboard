@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\UsersDataTable;
+use App\Http\Requests\User\CreateUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Interfaces\RoleRepositoryInterface;
 use App\Models\User;
@@ -48,14 +49,35 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {}
+    public function create()
+    {
+        $roles = $this->roleRepository->getAllRoles();
+        return view('users.create', compact('roles'));
+    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
     {
-        //
+        $requestData = $this->userRepository->getDataFromRequest($request);
+        try {
+            if (!empty($request->profile_pic)) {
+                $image = $request->profile_pic;
+                $destination = 'uploads/profile';
+                $requestData['profile_pic'] = uploadImages($image, $destination);
+            }
+            DB::beginTransaction();
+            $user = $this->userRepository->addData($requestData);
+            $roleId = (int) $requestData['role'];
+            if (isset($roleId)) {
+                $user->assignRole($roleId);
+            }
+            DB::commit();
+            return redirect()->route('users.index')->with('message', trans('app.users.created'));
+        } catch (Exception $exception) {
+            return redirect()->back()->with('error', $exception->getMessage())->withInput();
+        }
     }
 
     /**
@@ -69,7 +91,13 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id) {}
+    public function edit(string $id)
+    {
+        $roles = $this->roleRepository->getAllRoles();
+        $userData =  $this->userRepository->getDataById(decrypt($id));
+        $userRole = $userData->roles->first();
+        return view('users.edit', compact('roles', 'userRole', 'userData'));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -93,7 +121,7 @@ class UserController extends Controller
                     }
                 }
             }
-            
+
             DB::beginTransaction();
             $user = $this->userRepository->updateData($id, $requestData);
             $userRole = $user->roles->first();
@@ -103,8 +131,9 @@ class UserController extends Controller
             $roleId = (int) $requestData['role'];
             $user->assignRole($roleId);
             DB::commit();
-            return redirect()->back()->with('message', 'Profile Update Successfully');
+            return redirect()->back()->with('message', trans('app.users.updated'));
         } catch (Exception $exception) {
+            DB::rollBack();
             return redirect()->back()->with('error', $exception->getMessage())->withInput();
         }
     }
@@ -114,6 +143,14 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $this->userRepository->deleteData(decrypt($id));
+            DB::commit();
+            return redirect()->back()->with('message', trans('app.users.deleted'));
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $exception->getMessage())->withInput();
+        }
     }
 }

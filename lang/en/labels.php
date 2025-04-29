@@ -3,6 +3,7 @@
 return [
     'id' => 'S.No',
     'role_name' => 'Role Name',
+    'select_role' => 'Select Role',
     'created_at' => 'Created At',
     'updated_at' => 'Updated At',
     'action' => 'Action',
