@@ -16,4 +16,18 @@ if (!function_exists('uploadImages')) {
         return $name;
     }
 }
+
+if (!function_exists('isLinkActive')) {
+    /**
+     * If the current route is equal to the given route, return the string 'active', otherwise return an empty string.
+     *
+     * @param route The route that you want to compare with the current route.
+     *
+     * @return The function isLinkActive is being returned.
+     */
+    function isLinkActive($route)
+    {
+        return request()->is($route) ? 'active' : '';
+    }
+}
 ?>

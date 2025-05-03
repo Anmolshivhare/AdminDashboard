@@ -38,13 +38,13 @@
 
             {{-- {{ isLinkActive('*/dashboard') }} --}}
             <li
-                class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item  p-3">
+                class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item  p-3 {{ isLinkActive('home') }}">
                 <span class="sidebar-menus-list-item-img">
                     <i class="fa fa-dashboard fs-5"></i>
                 </span>
                 <div class="menu-with-icon transition-x">
-                    <a class="sidebar-menus-list-item-link nav-link transition-x py-0" aria-current="page"
-                        href="/home" title="Dashboard">
+                    <a class="sidebar-menus-list-item-link nav-link transition-x py-0  " aria-current="page"
+                        href="{{route('dashboard')}}" title="Dashboard">
                         {{ __('Dashboard') }} </a>
                 </div>
             </li>
@@ -53,7 +53,7 @@
             {{-- product Menu Start --}}
  
             <li
-                class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item  p-3">
+                class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item  p-3 {{ request()->routeIs('products.index') ? 'active' : '' }}">
                 <span class="sidebar-menus-list-item-img">
                     <i class="fa fa-shopping-cart fs-5"></i>
                 </span>
@@ -67,7 +67,7 @@
 
             {{-- Users Menu Start --}}
             @can('user-list')
-                 <li class="nav-item tansition-opacity p-3" id="usersMenu">
+                 <li class="sidebar-menus-list-item nav-item tansition-opacity p-3 @if (request()->routeIs('roles.index') || request()->routeIs('permissions.index') || request()->routeIs('users.index')) active @endif" id="usersMenu">
                     <a class="nav-link p-0  d-flex align-items-center dropdown-toggle" href="#"
                         data-bs-toggle="collapse" data-bs-target="#userSubmenu" aria-expanded="false"
                         aria-controls="userSubmenu">
@@ -77,19 +77,19 @@
                             class="ms-4  d-lg-inline tansition-opacity">{{ __('User Manage...') }}</span>
                     </a>
                     {{-- Users Dropdown Start --}}
-                    <ul id="userSubmenu" class="accordion-collapse collapse list-group list-group-flush pt-2">
+                    <ul id="userSubmenu" class="accordion-collapse collapse list-group list-group-flush pt-2  @if (request()->routeIs('roles.index') || request()->routeIs('permissions.index') || request()->routeIs('users.index')) show @endif">
                         @can('role-list')
                         <li class="list-group-item bg-transparent"><a
-                                class="dropdown-item   ms-2  tansition-opacity"
+                                class="dropdown-item sidebar-menus-dropdown-list-item-link d-flex align-items-center gap-3 {{ request()->routeIs('roles.index') ? 'active' : '' }}"
                                 href="{{route('roles.index')}}">{{ __('labels.roles') }}</a></li>
                         @endcan
                         @can('permission-list')
                         <li class="list-group-item bg-transparent"><a
-                                class="dropdown-item   ms-2  tansition-opacity"
+                                class="dropdown-item sidebar-menus-dropdown-list-item-link d-flex align-items-center gap-3  {{ request()->routeIs('permissions.index') ? 'active' : '' }}"
                                 href="{{ route('permissions.index') }}">{{ __('labels.permissions') }}</a></li>
                         @endcan
                         <li class="list-group-item bg-transparent"><a
-                                class="dropdown-item   ms-2  tansition-opacity"
+                                class="dropdown-item sidebar-menus-dropdown-list-item-link d-flex align-items-center gap-3  {{ request()->routeIs('users.index') ? 'active' : '' }}"
                                 href="{{ route('users.index') }}">{{ __('labels.admin_user') }}</a></li>
                      </ul>
                     {{-- Users Dropdown End --}}
@@ -98,9 +98,9 @@
             {{-- Users Menu End --}}
 
             {{-- Shop Menu End --}}
- 
+           
             <li
-                class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item  p-3">
+                class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item  p-3 {{request()->routeIs('shops.index') ? 'active' : ''}}">
                 <span class="sidebar-menus-list-item-img">
                     <i class="fa fa-shopping-cart fs-5"></i>
                 </span>
@@ -113,7 +113,7 @@
             {{-- Shop Menu End --}}
 
             {{-- product profile --}}
- 
+{{--  
             <li
                 class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item  p-3">
                 <span class="sidebar-menus-list-item-img">
@@ -124,7 +124,7 @@
                         href="{{ route('product-prices.index') }}" title="Shop">
                         {{ __('Product Profile') }} </a>
                 </div>
-            </li>
+            </li> --}}
             {{-- product profile --}}
 
             {{-- Shop Menu End --}}
@@ -143,7 +143,7 @@
              
  
                 <li
-                    class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item   p-3">
+                    class="sidebar-menus-list-item d-flex align-items-start transition-x nav-item   p-3 {{request()->route('setting') ? 'active' : ''}}">
                     <span class="sidebar-menus-list-item-img">
                         <i class="fa fa-gear fs-5"></i>
                     </span>
