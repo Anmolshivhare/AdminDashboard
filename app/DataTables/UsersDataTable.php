@@ -32,6 +32,12 @@ class UsersDataTable extends DataTable
             ->editColumn('name', function ($row) {
                 return $row->name ?: 'N/A';
             })
+            ->editColumn('created_at', function ($row) {
+                return $row->created_at->format('d-M-Y h:ia') ?: 'N/A';
+            })
+            ->editColumn('updated_at', function ($row) {
+                return $row->updated_at->format('d-M-Y h:ia') ?: 'N/A';
+            })
             ->setRowId('id');
     }
 
@@ -104,11 +110,11 @@ class UsersDataTable extends DataTable
                 ->title('id')
                 ->width(50)
                 ->addClass('text-center'),
-            Column::make('name')->title('User Name'),
-            Column::make('email'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
-            Column::make('action'),
+            Column::make('name')->title('User Name')->addClass('text-start'),
+            Column::make('email')->addClass('text-start'),
+            Column::make('created_at')->addClass('text-start'),
+            Column::make('updated_at')->addClass('text-start'),
+            Column::make('action')->addClass('text-start'),
         ];
     }
 
