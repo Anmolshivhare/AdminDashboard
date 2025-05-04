@@ -25,6 +25,8 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $this->user,
             'profile_pic' => 'nullable',
+            'phone_no' => 'nullable|numeric|digits_between:10,12',
+            'address' => 'nullable|string',
             'role'      => 'required|exists:roles,id',
         ];
     }

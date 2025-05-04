@@ -25,6 +25,8 @@ class CreateUserRequest extends FormRequest
         return [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
+            'phone_no' => 'nullable|numeric|digits_between:10,12',
+            'address' => 'nullable|string',
             'profile_pic' => 'nullable',
             'password' => ['required', Password::min(8)->mixedCase()],
             'role'      => 'required|exists:roles,id',

@@ -1340,13 +1340,20 @@ img.activity {
 
 //datatable 
 
-div.dt-container div.dt-layout-table>div{
+div.dt-container div.dt-layout-table>div {
     overflow: auto;
 }
 
-.main-content .main-inner-content .table tr th{
+.main-content .main-inner-content .table tr th {
     text-align: center;
 }
-.dropdown-item.active{
+
+.dropdown-item.active {
     color: #600b0b;
+}
+
+// ckeditor height
+
+.ck.ck-editor__main>.ck-editor__editable {
+    height: 10em;
 }

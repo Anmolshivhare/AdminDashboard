@@ -131,7 +131,7 @@ class UserController extends Controller
             $roleId = (int) $requestData['role'];
             $user->assignRole($roleId);
             DB::commit();
-            return redirect()->back()->with('message', trans('app.users.updated'));
+            return redirect()->route('users.index')->with('message', trans('app.users.updated'));
         } catch (Exception $exception) {
             DB::rollBack();
             return redirect()->back()->with('error', $exception->getMessage())->withInput();

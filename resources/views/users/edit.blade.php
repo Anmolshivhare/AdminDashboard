@@ -23,7 +23,7 @@
                     <div class="col-md-12">
                         <div
                             class="d-flex flex-row pb-4 py-4 px-6 border-bottom border-1 bg-white gap-3 justify-content-between align-items-center">
-                            <h3 class="mb-0 fw-bold ms-4">Edit Profile</h3>
+                            <h3 class="mb-0 fw-bold ms-4">Edit User</h3>
                         </div>
                     </div>
                 </div>
@@ -56,6 +56,7 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                     <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
                                         <label class="form-label text-dark"
                                             for="email">{{ __('Email') }}
@@ -74,6 +75,45 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
+                                        <label class="form-label text-dark"
+                                            for="phone_no">{{ __('labels.phone') }}
+                                        </label>
+                                        <div class="input-group">
+                                            <input
+                                                class="form-control
+                                        @error('phone_no') is-invalid @enderror"
+                                                name="phone_no" type="number" id=""
+                                                value="{{old('phone_no') ?? $userData->phone_no}}"
+                                                placeholder="{{ __('labels.phone') }}"  />
+                                            @error('phone_no')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label for="role" class="form-label">{{ __('labels.role') }}</label>
+                                        <select id="role" name="role"
+                                            class="form-select
+                                        @error('role') is-invalid @enderror">
+                                            <option value="">{{ __('labels.select_role') }}</option>
+                                            @foreach ($roles as $role)
+                                                <option value="{{ $role->id }}"
+                                                    {{ !empty($userRole->id) && $userRole->id == $role->id ? 'selected="selected"' : '' }}>
+                                                    {{ ucwords($role->name) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('role')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
                                     <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
                                         <label class="form-label text-dark"
                                             for="profile_pic">{{ __('Profile') }}
@@ -97,26 +137,26 @@
                                         <img src="{{ asset('uploads/profile/user.png') }}" width="50" height="50" class="img-thumbnail rounded-circle">
                                         @endif
                                     </div>
-                                    
-                                    <div class="col-6">
-                                        <label for="role" class="form-label">{{ __('labels.role') }}</label>
-                                        <select id="role" name="role"
-                                            class="form-select
-                                        @error('role') is-invalid @enderror">
-                                            <option value="">{{ __('labels.select_role') }}</option>
-                                            @foreach ($roles as $role)
-                                                <option value="{{ $role->id }}"
-                                                    {{ !empty($userRole->id) && $userRole->id == $role->id ? 'selected="selected"' : '' }}>
-                                                    {{ ucwords($role->name) }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('role')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                     
+                                    <div class="col-md-12 col-lg-12 mb-3">
+                                        <label class="form-label text-dark"
+                                            for="address">{{ __('labels.address') }}
+                                        </label>
+                                        <div class="">
+                                            <textarea
+                                                class="form-control
+                                        @error('address') is-invalid @enderror"
+                                                name="address" type="text" id="editor" 
+                                                value=""
+                                                placeholder="{{ __('labels.address') }}"> {{ old('address') ?? $userData->address}}</textarea>
+                                            @error('address')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
                                     </div>
+
                                 </div>  
  
                                 <button class="btn btn-primary fs-5 mt-3" type="submit">

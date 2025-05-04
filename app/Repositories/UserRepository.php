@@ -20,6 +20,8 @@ class UserRepository extends BaseRepository
         return $request->only([
             'name',
             'email',
+            'phone_no',
+            'address',
             'profile_pic',
             'password',
             'role',

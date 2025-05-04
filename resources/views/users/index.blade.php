@@ -8,6 +8,13 @@
           </div>    
         <div class="card">
             <div class="card-header">Manage Users</div>
+            
+        @if (session('message'))
+            <div class="alert alert-success alert-dismissible fade show mx-4 mb-0 mt-3" role="alert">
+                {{ session('message') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+       @endif
             <div class="card-body">
                 {{ $dataTable->table() }}
             </div>

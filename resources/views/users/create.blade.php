@@ -112,6 +112,24 @@
                                         </div>
                                         
                                     </div>
+                                    <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
+                                        <label class="form-label text-dark"
+                                            for="phone_no">{{ __('labels.phone') }}
+                                        </label>
+                                        <div class="input-group">
+                                            <input
+                                                class="form-control
+                                        @error('phone_no') is-invalid @enderror"
+                                                name="phone_no" type="number" id=""
+                                                value="{{old('phone_no')}}"
+                                                placeholder="{{ __('labels.phone') }}"  />
+                                            @error('phone_no')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     
                                     <div class="col-6">
                                         <label for="role" class="form-label">{{ __('labels.role') }}</label>
@@ -131,6 +149,25 @@
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
+                                    </div>
+
+                                    <div class="col-md-12 col-lg-12 mb-3">
+                                        <label class="form-label text-dark"
+                                            for="address">{{ __('labels.address') }}
+                                        </label>
+                                        <div class="">
+                                            <textarea
+                                                class="form-control
+                                        @error('address') is-invalid @enderror"
+                                                name="address" type="text" id="editor" 
+                                                value=""
+                                                placeholder="{{ __('labels.address') }}"> {{ old('address') }}</textarea>
+                                            @error('address')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>  
  

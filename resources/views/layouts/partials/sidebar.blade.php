@@ -24,10 +24,13 @@
                             class="img-fluid m-auto transition-x d-block border border-primary rounded-circle partial-logo auth-img" />
                     </a>
                 @endif
-                <h4 class="user-name fs-5 text-primary mt-3 mb-0">{{ $user->name ? $user->name : '' }}</h4>
+                @auth
+                <h4 class="user-name fs-5 text-primary mt-3 mb-0">{{ Auth::user()->name }}</h4>
                 <a href="javascript:void(0)"
-                    class="fs-5 text-secondary user-email">{{ $user->email ? $user->email : '' }}
+                    class="fs-5 text-secondary user-email">{{ Auth::user()->email }}
                 </a>
+                @endauth
+ 
             </div>
         </div>
 

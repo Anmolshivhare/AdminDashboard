@@ -29,6 +29,9 @@ class UsersDataTable extends DataTable
                 $deleteRoute = route('users.destroy', $id);
                 return view('layouts.datatable-action-button', compact('editRoute', 'deleteRoute'));
             })
+            ->editColumn('name', function ($row) {
+                return $row->name ?: 'N/A';
+            })
             ->setRowId('id');
     }
 
@@ -37,7 +40,7 @@ class UsersDataTable extends DataTable
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery()->orderBy('id', 'desc');
+        return $model->newQuery();
     }
 
     /**
@@ -50,7 +53,7 @@ class UsersDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             //->dom('Bfrtip')
-            ->orderBy(1)
+            ->orderBy(3,'desc')
             ->selectStyleSingle()
             ->buttons([
                 Button::make('excel'),
@@ -101,7 +104,7 @@ class UsersDataTable extends DataTable
                 ->title('id')
                 ->width(50)
                 ->addClass('text-center'),
-            Column::make('name'),
+            Column::make('name')->title('User Name'),
             Column::make('email'),
             Column::make('created_at'),
             Column::make('updated_at'),
