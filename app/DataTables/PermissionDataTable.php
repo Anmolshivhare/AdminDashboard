@@ -29,6 +29,9 @@ class PermissionDataTable extends DataTable
                 $deleteRoute = route('permissions.destroy', $id);
                 return view('layouts.datatable-action-button', compact('editRoute', 'deleteRoute'));
             })
+            ->editColumn('created_at',function($row){
+                return getDateAndTime($row->created_at);
+            })
 
             ->setRowId('id');
     }
@@ -38,7 +41,7 @@ class PermissionDataTable extends DataTable
      */
     public function query(Permission $model): QueryBuilder
     {
-        return $model->newQuery()->orderBy('id','desc');
+        return $model->newQuery();
     }
 
     /**
@@ -51,7 +54,7 @@ class PermissionDataTable extends DataTable
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     //->dom('Bfrtip')
-                    ->orderBy(1)
+                    ->orderBy(2,'desc')
                     ->selectStyleSingle()
                     ->buttons([
                         Button::make('excel'),
@@ -73,8 +76,8 @@ class PermissionDataTable extends DataTable
             ->title('S.No')
             ->width(50)
             ->addClass('text-center'),
-            Column::make('name'),
-            Column::make('created_at'),
+            Column::make('name')->addClass('text-start'),
+            Column::make('created_at')->addClass('text-start'),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)

@@ -7,6 +7,7 @@ use App\Http\Requests\Permission\CreatePermissionRequest;
 use App\Http\Requests\Permission\UpdatePermissionRequest;
 use App\Interfaces\PermissionRepositoryInterface;
 use App\Models\Permission;
+use App\Repositories\PermissionRepository;
 use Illuminate\Http\Request;
 use DB;
 use Exception;
@@ -17,7 +18,7 @@ class PermissionController extends Controller
 {
     public $permissionRepository;
 
-    public function __construct(PermissionRepositoryInterface $permissionRepository)
+    public function __construct(PermissionRepository $permissionRepository)
     {
         $this->permissionRepository = $permissionRepository;
         $this->middleware(['permission:permission-list'], ['only' => ['index']]);
@@ -39,7 +40,13 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        $permissions = $this->permissionRepository->getAllPermissions();
+        $childPermissions = $this->permissionRepository->getAllData();
+        $parentPermissions = $childPermissions->whereNull('parent_id');
+        $permissions =  [
+            'parents' => $parentPermissions,
+            'children' => $childPermissions,
+        ];
+
         return view('permission.create', compact('permissions'));
     }
 
@@ -51,7 +58,30 @@ class PermissionController extends Controller
         $requestData = $this->permissionRepository->getPermissionDataFormRequest($request);
         try {
             DB::beginTransaction();
-            $this->permissionRepository->createPermission($requestData);
+            $permission =  $this->permissionRepository->addData(
+                [
+                    'guard_name' => 'web',
+                    'name' => $requestData['name']
+                ]
+            );
+
+            if (isset($requestData['parent']) && $requestData['parent'] != 'none') {
+                $parent = $this->permissionRepository->getDataById($requestData['parent']);
+                if ($parent) {
+                    $parent->appendNode($permission);
+                }
+            }
+
+
+            if (isset($requestData['children']) && is_array($requestData['children'])) {
+                foreach ($requestData['children'] as $childId) {
+                    $child = $this->permissionRepository->getDataById($childId);
+                    if ($child) {
+                        $permission->appendNode($child);
+                    }
+                }
+            }
+
             DB::commit();
 
             return redirect()
@@ -78,8 +108,13 @@ class PermissionController extends Controller
      */
     public function edit(string $id)
     {
-        $permission = $this->permissionRepository->getPermissionById(decrypt($id));
-        $permissions = $this->permissionRepository->getAllPermissions();
+        $permission = $this->permissionRepository->getDataById(decrypt($id));
+        $childPermissions = $this->permissionRepository->getAllData();
+        $parentPermissions = $childPermissions->whereNull('parent_id');
+        $permissions =  [
+            'parents' => $parentPermissions,
+            'children' => $childPermissions,
+        ];
         return view('permission.edit', compact('permission', 'permissions'));
     }
 
@@ -91,7 +126,18 @@ class PermissionController extends Controller
         $requestData = $this->permissionRepository->getPermissionDataFormRequest($request);
         try {
             DB::beginTransaction();
-            $this->permissionRepository->updatePermission(decrypt($id), $requestData);
+            $permission = $this->permissionRepository->updateData(decrypt($id), $requestData);
+            $permission->name = $requestData['name'];
+            if ($requestData['parent'] ?? 'none' !== 'none') {
+                $parent = $this->permissionRepository->getDataById($requestData['parent']);
+                if ($parent) {
+                    $parent->appendNode($permission);
+                }
+            } else {
+                $permission->makeRoot();
+            }
+            $permission->save();
+
             DB::commit();
             return redirect()
                 ->route('permissions.index')
@@ -101,11 +147,20 @@ class PermissionController extends Controller
         }
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $this->permissionRepository->deleteData(decrypt($id));
+            DB::Commit();
+            return redirect()->route('permissions.index')->with('message',trans('app.permissions    .deleted'));
+
+        } catch (Exception $exception){
+            return redirect()->back()->with('error', $exception->getMessage())->withInput();
+        }
     }
 }

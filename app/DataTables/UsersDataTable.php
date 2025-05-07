@@ -33,11 +33,12 @@ class UsersDataTable extends DataTable
                 return $row->name ?: 'N/A';
             })
             ->editColumn('created_at', function ($row) {
-                return $row->created_at->format('d-M-Y h:ia') ?: 'N/A';
+                return getDateAndTime($row->created_at) ?: 'N/A';
             })
             ->editColumn('updated_at', function ($row) {
-                return $row->updated_at->format('d-M-Y h:ia') ?: 'N/A';
+                return getDateAndTime($row->updated_at) ?: 'N/A';
             })
+            
             ->setRowId('id');
     }
 
@@ -58,8 +59,8 @@ class UsersDataTable extends DataTable
             ->setTableId('users-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            //->dom('Bfrtip')
-            ->orderBy(3,'desc')
+            ->dom('Bfrtip')
+            ->orderBy(3, 'desc')
             ->selectStyleSingle()
             ->buttons([
                 Button::make('excel'),
@@ -112,6 +113,7 @@ class UsersDataTable extends DataTable
                 ->addClass('text-center'),
             Column::make('name')->title('User Name')->addClass('text-start'),
             Column::make('email')->addClass('text-start'),
+            Column::make('phone_no')->addClass('text-start'),
             Column::make('created_at')->addClass('text-start'),
             Column::make('updated_at')->addClass('text-start'),
             Column::make('action')->addClass('text-start'),
