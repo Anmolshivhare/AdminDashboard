@@ -20,7 +20,7 @@
 
     @if (!empty($deleteRoute))
         <li class="data-table-list-item list-group-item border-0 p-0 bg-transparent">
-            <form action="{{ $deleteRoute }}" method="POST" onsubmit="return confirm('Are you sure?');"
+            <form action="{{ $deleteRoute }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');"
                 style="display: inline-block;">
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

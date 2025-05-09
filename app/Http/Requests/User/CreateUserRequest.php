@@ -3,8 +3,9 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
-class UpdateUserRequest extends FormRequest
+class CreateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,17 +21,15 @@ class UpdateUserRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    { 
+    {
         return [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $this->user,
-            'profile_pic' => 'nullable',
+            'email' => 'required|email|unique:users,email',
             'phone_no' => 'nullable|numeric|digits_between:10,12',
             'address' => 'nullable|string',
+            'profile_pic' => 'nullable',
+            'password' => ['required', Password::min(8)->mixedCase()],
             'role'      => 'required|exists:roles,id',
         ];
     }
 }
-
-
- 

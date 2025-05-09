@@ -37,6 +37,9 @@ class ProductsDataTable extends DataTable
             ->addColumn('created_at', function ($row) {
                 return $row->created_at->format('d-M-Y h:ia');
             })
+            ->addColumn('updated_at', function ($row) {
+                return $row->updated_at->format('d-M-Y h:ia');
+            })
             // ->addColumn('shop', function ($row) {
             //     return $row->shops->pluck('shop_name') ?? 'N/A';
             // })
@@ -94,11 +97,11 @@ class ProductsDataTable extends DataTable
                 ->title('id')
                 ->width(50)
                 ->addClass('text-center'),
-            Column::make('name'),
+            Column::make('name')->addClass('text-center'),
             // Column::make('shop'),
-            Column::make('image'),
-            // Column::make('created_at'),
-            // Column::make('updated_at'),
+            Column::make('image')->addClass('text-center'),
+            Column::make('created_at')->addClass('text-center'),
+            Column::make('updated_at')->addClass('text-center'),
             Column::make('action')
                 ->exportable(false)
                 ->printable(false)
