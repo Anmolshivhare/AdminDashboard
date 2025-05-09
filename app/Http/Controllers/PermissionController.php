@@ -44,10 +44,9 @@ class PermissionController extends Controller
         $parentPermissions = $childPermissions->whereNull('parent_id');
         $permissions =  [
             'parents' => $parentPermissions,
-            'children' => $childPermissions,
+            // 'children' => $childPermissions,
         ];
-
-        return view('permission.create', compact('permissions'));
+         return view('permission.create', compact('permissions'));
     }
 
     /**
@@ -66,22 +65,23 @@ class PermissionController extends Controller
             );
 
             if (isset($requestData['parent']) && $requestData['parent'] != 'none') {
-                $parent = $this->permissionRepository->getDataById($requestData['parent']);
+                 $parent = $this->permissionRepository->getDataById($requestData['parent']);
                 if ($parent) {
                     $parent->appendNode($permission);
                 }
             }
 
 
-            if (isset($requestData['children']) && is_array($requestData['children'])) {
-                foreach ($requestData['children'] as $childId) {
-                    $child = $this->permissionRepository->getDataById($childId);
-                    if ($child) {
-                        $permission->appendNode($child);
-                    }
-                }
-            }
-
+            // if (isset($requestData['children']) && is_array($requestData['children'])) {
+            //     dd($requestData['children']);
+            //     foreach ($requestData['children'] as $childId) {
+            //         $child = $this->permissionRepository->getDataById($childId);
+            //         if ($child) {
+            //             $permission->appendNode($child);
+            //         }
+            //     }
+            // }
+ 
             DB::commit();
 
             return redirect()
@@ -113,7 +113,7 @@ class PermissionController extends Controller
         $parentPermissions = $childPermissions->whereNull('parent_id');
         $permissions =  [
             'parents' => $parentPermissions,
-            'children' => $childPermissions,
+            // 'children' => $childPermissions,
         ];
         return view('permission.edit', compact('permission', 'permissions'));
     }

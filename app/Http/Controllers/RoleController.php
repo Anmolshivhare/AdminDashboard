@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\RolesDataTables;
-use App\Interfaces\PermissionRepositoryInterface;
 use App\Interfaces\RoleRepositoryInterface;
+use App\Repositories\PermissionRepository;
+use App\Repositories\RoleRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +15,7 @@ class RoleController extends Controller
 
     public $permissionRepository;
     public $roleRepository;
-    public function __construct(PermissionRepositoryInterface $permissionRepository,RoleRepositoryInterface $roleRepository)
+    public function __construct(PermissionRepository $permissionRepository, RoleRepository $roleRepository)
     {
         $this->permissionRepository = $permissionRepository;
         $this->roleRepository = $roleRepository;
@@ -38,7 +39,10 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = $this->permissionRepository->getAllPermissions();
+        $permissions = $this->permissionRepository->getAllData();
+        $permissions =  [
+            'children' => $permissions,
+        ];
         return view('role.create', compact('permissions'));
     }
 
@@ -47,13 +51,21 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $roleDetails = $request->only([
-            'name',
-        ]);
+        $requestData = $this->roleRepository->getRoleDataFormRequest($request);
+
         try {
             $permissions = $this->permissionRepository->getAllPermisionFromRequest($request);
+
             DB::beginTransaction();
-            $this->roleRepository->createRole($roleDetails, $permissions);
+            $roleData = $this->roleRepository->addData(
+                [
+                    'guard_name' => 'web',
+                    'name' => $requestData['name']
+                ]
+            );
+            if (!empty($permissions)) {
+                $roleData->permissions()->sync($permissions); // Sync ensures no duplicates, and replaces existing ones
+            }
             DB::commit();
 
             return redirect()
@@ -79,8 +91,11 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        $role = $this->roleRepository->getRoleById(decrypt($id));
-        $permissions = $this->permissionRepository->getAllPermissions();
+        $role = $this->roleRepository->getDataById(decrypt($id));
+        $permissions = $this->permissionRepository->getAllData();
+        $permissions =  [
+            'children' => $permissions,
+        ];
         $rolePermissionIds = $role->permissions->pluck('id')->toArray();
         return view('role.edit', compact('role', 'permissions', 'rolePermissionIds'));
     }
@@ -90,14 +105,16 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $roleDetails = $request->only([
-            'name'
-        ]);
+        $requestData = $this->roleRepository->getRoleDataFormRequest($request);
 
         try {
             $permissions = $this->permissionRepository->getAllPermisionFromRequest($request);
             DB::beginTransaction();
-            $this->roleRepository->updateRole($id, $roleDetails, $permissions);
+            $role =  $this->roleRepository->updateData($id, $requestData);
+            $role->name = $requestData['name'];
+            $role->save();
+            $role->permissions()->sync($permissions);
+         
             DB::commit();
 
             return redirect()
@@ -108,24 +125,23 @@ class RoleController extends Controller
 
             return redirect()->back()->with('error', $exception->getMessage())->withInput();
         }
-    }   
+    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             DB::beginTransaction();
-           $this->roleRepository->deleteRoleById(decrypt($id));
-           DB::Commit();
-           
-           return redirect()->route('roles.index')->with('message',trans('app.roles.deleted'));
-        }catch(Exception $exception){
+            $this->roleRepository->deleteData(decrypt($id));
+            DB::Commit();
+
+            return redirect()->route('roles.index')->with('message', trans('app.roles.deleted'));
+        } catch (Exception $exception) {
             DB::rollBack();
 
             return redirect()->back()->with('error', $exception->getMessage())->withInput();
-
         }
     }
 }

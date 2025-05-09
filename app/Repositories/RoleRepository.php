@@ -5,97 +5,17 @@ namespace App\Repositories;
 use App\Interfaces\RoleRepositoryInterface;
 use Spatie\Permission\Models\Role;
 
-class RoleRepository implements RoleRepositoryInterface
+class RoleRepository extends BaseRepository
 {
-    /**
-     * function to get all the roles
-     *
-     * @return object
-     */
-    public function getAllRoles()
-    {
-        return Role::get();
+    public function __construct(Role $model) {
+       parent::__construct($model);
     }
 
-    /**
-     * function to get the role data by id
-     *
-     * @param integer $roleId
-     * @return object
-     */
-    public function getRoleById(int $roleId)
+     public function getRoleDataFormRequest($requestData)
     {
-        return Role::find($roleId);
+        return $requestData->only([
+            'name',
+        ]);
     }
 
-    /**
-     * function to get the role data by name
-     *
-     * @param string $roleName
-     * @return object
-     */
-    public function getRoleByName(string $roleName)
-    {
-        return Role::where('name', $roleName)->first();
-    }
-
-    /**
-     * function to create the role and assign the permission
-     *
-     * @param array $roleName
-     * @param array $permission
-     * @return object
-     */
-    public function createRole(array $roleName, $permissions)
-    {
-        // Check if the role already exists
-        $role = Role::firstOrCreate(
-            ['guard_name' => 'web', 'name' => $roleName['name']] // If it doesn't exist, create this role
-        );
-
-        // Attach permissions if provided
-        if (!empty($permissions)) {
-            $role->permissions()->sync($permissions); // Sync ensures no duplicates, and replaces existing ones
-        }
-
-        return $role;
-    }
-
-    /**
-     * function to update the role data
-     *
-     * @param integer $roleId
-     * @param array $roleName
-     * @param array $permissions
-     * @return object
-     */
-    public function updateRole(int $roleId, array $roleName, $permissions)
-    {
-        $role = Role::findOrFail($roleId);
-        $role->name = $roleName['name'];
-        $role->save();
-        $role->permissions()->sync($permissions);
-        return $role;
-    }
-
-    /**
-     * function to delete the role data by id
-     *
-     * @param integer $roleId
-     * @return object
-     */
-    public function deleteRoleById(int $roleId)
-    {
-        $role = Role::findOrFail($roleId);
-        $role->delete();
-        return $role;
-    }
-
-    /**
-     * This function get company wise role
-     */
-    public function getRoleByCompany()
-    {
-        // return Role::whereNotIn('name', [SUPER_ADMIN_ROLE_NAME, ADMIN_ROLE_NAME])->get();
-    }
 }
