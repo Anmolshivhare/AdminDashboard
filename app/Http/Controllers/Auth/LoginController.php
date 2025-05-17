@@ -22,27 +22,12 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    public function logout(Request $request)
-    {
-
-        if (!Auth::check()) {
-            // If the user is not authenticated, redirect to login
-            return redirect()->route('login');
-        }
-
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login');
-    }
-
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/login';
 
     /**
      * Create a new controller instance.

@@ -60,9 +60,9 @@ class ShopsDataTable extends DataTable
             ->title('id')
             ->width(50)
             ->addClass('text-center'),
-            Column::make('shop_name'),
-            Column::make('action'),
-            Column::make('created_at'),
+            Column::make('shop_name') ->addClass('text-center'),
+            Column::make('created_at') ->addClass('text-center'),
+            Column::make('action') ->addClass('text-center'),
         ];
     }
 

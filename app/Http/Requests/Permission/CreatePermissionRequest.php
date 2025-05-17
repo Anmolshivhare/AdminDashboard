@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Permission;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+class CreatePermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,17 +20,10 @@ class UpdateUserRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    { 
+    {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $this->user,
-            'profile_pic' => 'nullable',
-            'phone_no' => 'nullable|numeric|digits_between:10,12',
-            'address' => 'nullable|string',
-            'role'      => 'required|exists:roles,id',
+            'name' => 'required|unique:permissions,name',
+            'parent'=>'nullable',
         ];
     }
 }
-
-
- 

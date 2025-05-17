@@ -1,5 +1,4 @@
 import './bootstrap';
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import $ from 'jquery';
 import select2 from "select2";
 import 'select2/dist/css/select2.min.css';
@@ -9,6 +8,10 @@ import 'laravel-datatables-vite';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'datatables.net';
 import 'datatables.net-buttons';
+import { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph, SourceEditing } from 'ckeditor5';
+
+import 'ckeditor5/ckeditor5.css';
+
 import jszip from 'jszip';
 
 // Assign JSZip globally for DataTables export to work
@@ -17,22 +20,20 @@ window.JSZip = jszip;
 window.$ = window.jQuery = $;
 select2();
 
-$(document).ready(function () {
-    let editorInstance;
-    // Initialize CKEditor when the Offcanvas is shown
-    $('.offcanvasScrolling').on('shown.bs.offcanvas', function () {
-        if (!editorInstance) {
-            ClassicEditor
-                .create($('#editor')[0]) // jQuery selector needs [0] to get the DOM element
-                .then(editor => {
-                    editorInstance = editor;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-    });
-});
+
+import 'ckeditor5/ckeditor5.css';
+
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        licenseKey: 'GPL', // Or 'GPL'.
+        plugins: [ Essentials, Bold, Italic, Font, Paragraph, SourceEditing ],
+        toolbar: [
+            'undo', 'redo', '|', 'bold', 'italic', '|',
+            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor','|', 'sourceEditing'
+        ]
+    } )
+    .then( /* ... */ )
+    .catch( /* ... */ );
 
 $(document).on('submit', '.dynamic-form', function (event) {
     event.preventDefault();
@@ -141,48 +142,122 @@ for (let i = 0; i < elements.length; i++) {
 
 //session timeout
 
-let inactivityTime = 0;
-let timeoutDuration = 3600 * 1000; // 1 minute (in milliseconds)
+ 
 
-// Define the logout URL (it should use POST method)
-let logoutUrl = "/logout"; // Laravel's logout route URL
-console.log(logoutUrl);
-function resetInactivityTimer() {
-    inactivityTime = 0; // Reset timer on user activity
-}
-
-function checkInactivity() {
-    inactivityTime += 1000; // Increase inactivity time by 1 second
-    if (inactivityTime >= timeoutDuration) {
-        // Perform the logout using a POST request
-        logoutUser();
-    }
-}
-
-function logoutUser() {
-    // Create a form and submit it via POST to the logout route
-    let form = document.createElement('form');
-    form.method = 'POST';
-    form.action = logoutUrl;
-
-    // Add CSRF token to the form (required by Laravel)
-    let csrfToken = document.head.querySelector('meta[name="csrf-token"]').content;
-    let csrfInput = document.createElement('input');
-    csrfInput.type = 'hidden';
-    csrfInput.name = '_token';
-    csrfInput.value = csrfToken;
-    form.appendChild(csrfInput);
-
-    // Submit the form to trigger the logout action
-    document.body.appendChild(form);
-    form.submit();
-}
-
-// Event listeners for user activity
-window.onload = function() {
-    setInterval(checkInactivity, 1000); // Check every second for inactivity
-    window.onmousemove = resetInactivityTimer; // Reset on mouse move
-    window.onkeydown = resetInactivityTimer; // Reset on key press
-};
 
  
+// let inactivityTime = 0;
+// let timeoutDuration = 3600 * 1000; // 1 minute (in milliseconds)
+
+// // Define the logout URL (it should use POST method)
+// let logoutUrl = "/logout"; // Laravel's logout route URL
+// console.log(logoutUrl);
+// function resetInactivityTimer() {
+//     inactivityTime = 0; // Reset timer on user activity
+// }
+
+// function checkInactivity() {
+//     inactivityTime += 1000; // Increase inactivity time by 1 second
+//     if (inactivityTime >= timeoutDuration) {
+//         // Perform the logout using a POST request
+//         logoutUser();
+//     }
+// }
+
+// function logoutUser() {
+//     // Create a form and submit it via POST to the logout route
+//     let form = document.createElement('form');
+//     form.method = 'POST';
+//     form.action = logoutUrl;
+
+//     // Add CSRF token to the form (required by Laravel)
+//     let csrfToken = document.head.querySelector('meta[name="csrf-token"]').content;
+//     let csrfInput = document.createElement('input');
+//     csrfInput.type = 'hidden';
+//     csrfInput.name = '_token';
+//     csrfInput.value = csrfToken;
+//     form.appendChild(csrfInput);
+
+//     // Submit the form to trigger the logout action
+//     document.body.appendChild(form);
+//     form.submit();
+// }
+
+// // Event listeners for user activity
+// window.onload = function() {
+//     setInterval(checkInactivity, 1000); // Check every second for inactivity
+//     window.onmousemove = resetInactivityTimer; // Reset on mouse move
+//     window.onkeydown = resetInactivityTimer; // Reset on key press
+// };
+
+ //role and permission nestedtree
+document.addEventListener("DOMContentLoaded", function () {
+    // When a parent checkbox is clicked, toggle its child checkboxes
+    document
+      .querySelectorAll(".parent-checkbox")
+      .forEach(function (parentCheckbox) {
+        parentCheckbox.addEventListener("change", function () {
+          let parentId = this.value;
+          let childCheckboxes = document.querySelectorAll(
+            'input.child-checkbox[data-parent-id="' + parentId + '"]'
+          );
+  
+          // Check or uncheck all child checkboxes based on the parent checkbox
+          childCheckboxes.forEach(function (childCheckbox) {
+            childCheckbox.checked = parentCheckbox.checked;
+          });
+  
+          // Check/uncheck "Select All" if necessary
+          updateSelectAllStatus();
+        });
+      });
+  
+    // "Select All" checkbox functionality
+    let selectAllCheckbox = document.getElementById("select-all");
+    if (selectAllCheckbox) {
+      selectAllCheckbox.addEventListener("change", function () {
+        let allCheckboxes = document.querySelectorAll(
+          ".parent-checkbox, .child-checkbox"
+        );
+        allCheckboxes.forEach(function (checkbox) {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+      });
+    }
+  
+    // Function to update "Select All" checkbox based on individual selections
+    function updateSelectAllStatus() {
+      let allCheckboxes = document.querySelectorAll(
+        ".parent-checkbox, .child-checkbox"
+      );
+      let allChecked = Array.from(allCheckboxes).every(function (checkbox) {
+        return checkbox.checked;
+      });
+      selectAllCheckbox.checked = allChecked;
+    }
+  
+    // Ensure "Select All" is updated if any individual checkbox is manually changed
+    document
+      .querySelectorAll(".child-checkbox")
+      .forEach(function (childCheckbox) {
+        childCheckbox.addEventListener("change", function () {
+          // Get the parent checkbox associated with this child
+          let parentId = this.getAttribute("data-parent-id");
+          let parentCheckbox = document.querySelector(
+            'input.parent-checkbox[value="' + parentId + '"]'
+          );
+          // If any child is checked, ensure the parent iimport { Calendar } from '@fullcalendar/core';
+          let childCheckboxes = document.querySelectorAll(
+            'input.child-checkbox[data-parent-id="' + parentId + '"]'
+          );
+          let anyChildChecked = Array.from(childCheckboxes).some(function (
+            child
+          ) {
+            return child.checked;
+          });
+          parentCheckbox.checked = anyChildChecked;
+          // Update "Select All" checkbox status
+          updateSelectAllStatus();
+        });
+      });
+  });

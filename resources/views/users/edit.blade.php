@@ -23,7 +23,7 @@
                     <div class="col-md-12">
                         <div
                             class="d-flex flex-row pb-4 py-4 px-6 border-bottom border-1 bg-white gap-3 justify-content-between align-items-center">
-                            <h3 class="mb-0 fw-bold ms-4">Edit Profile</h3>
+                            <h3 class="mb-0 fw-bold ms-4">Edit User</h3>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                                 <div class="row mb-0">
                                     <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
                                         <label class="form-label text-dark"
-                                            for="name">{{ __('Name') }}
+                                            for="first_name">{{ __('Name') }}
                                         </label>
                                         <div class="input-group">
                                             <input
@@ -56,6 +56,7 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                     <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
                                         <label class="form-label text-dark"
                                             for="email">{{ __('Email') }}
@@ -74,7 +75,6 @@
                                             @enderror
                                         </div>
                                     </div>
-
                                     <div class="col-xm-12 col-sm-6 col-lg-6 col-md-6 col-xl-6 col-xxl-6 mb-3">
                                         <label class="form-label text-dark"
                                             for="phone_no">{{ __('labels.phone') }}
@@ -137,7 +137,7 @@
                                         <img src="{{ asset('uploads/profile/user.png') }}" width="50" height="50" class="img-thumbnail rounded-circle">
                                         @endif
                                     </div>
-                                   
+                                     
                                     <div class="col-md-12 col-lg-12 mb-3">
                                         <label class="form-label text-dark"
                                             for="address">{{ __('labels.address') }}
@@ -157,7 +157,6 @@
                                         </div>
                                     </div>
 
-                                   
                                 </div>  
  
                                 <button class="btn btn-primary fs-5 mt-3" type="submit">
