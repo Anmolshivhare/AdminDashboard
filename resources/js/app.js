@@ -145,23 +145,7 @@ for (let i = 0; i < elements.length; i++) {
  
 
 
-let sessionExpiredHandled = false;
  
-$.fn.dataTable.ext.errMode = 'none';
-$(document).ajaxError(function(event, jqxhr, settings, thrownError) {
-    if ((jqxhr.status === 401 || jqxhr.status === 419) && !sessionExpiredHandled) {
-        sessionExpiredHandled = true;
-        const failedUrl = settings.url || '';
-        let redirectUrl = '/login';
- 
-        if (failedUrl.includes('/admin')) {
-            redirectUrl = '/login';
-        }
-        alert("Your session has expired. You will be redirected to the login page.");
-        window.location.href = redirectUrl;
-    }
-});
-
 // let inactivityTime = 0;
 // let timeoutDuration = 3600 * 1000; // 1 minute (in milliseconds)
 

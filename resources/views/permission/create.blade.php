@@ -39,7 +39,7 @@
                             <label for="name" class="form-label text-dark">{{ __('labels.select_parent') }}</label>
                             <select class="form-select" name="parent">
                                 <option value="none">{{ __('No Parent') }}</option>
-                                @foreach ($permissions['parents'] as $parent)
+                                @foreach ($permissions as $parent)
                                     <option value="{{ $parent->id }}">{{ $parent->name }}</option>
                                 @endforeach
 

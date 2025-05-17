@@ -41,12 +41,8 @@ class PermissionController extends Controller
     public function create()
     {
         $childPermissions = $this->permissionRepository->getAllData();
-        $parentPermissions = $childPermissions->whereNull('parent_id');
-        $permissions =  [
-            'parents' => $parentPermissions,
-            // 'children' => $childPermissions,
-        ];
-         return view('permission.create', compact('permissions'));
+        $permissions = $childPermissions->whereNull('parent_id');
+        return view('permission.create', compact('permissions'));
     }
 
     /**
@@ -54,46 +50,24 @@ class PermissionController extends Controller
      */
     public function store(CreatePermissionRequest $request)
     {
-        $requestData = $this->permissionRepository->getPermissionDataFormRequest($request);
         try {
+            $requestData = $this->permissionRepository->getPermissionDataFormRequest($request);
+            $requestData['guard_name'] = GUARD_NAME;
             DB::beginTransaction();
-            $permission =  $this->permissionRepository->addData(
-                [
-                    'guard_name' => 'web',
-                    'name' => $requestData['name']
-                ]
-            );
-
+            $permission =  $this->permissionRepository->addData($requestData);
             if (isset($requestData['parent']) && $requestData['parent'] != 'none') {
-                 $parent = $this->permissionRepository->getDataById($requestData['parent']);
+                $parent = $this->permissionRepository->getDataById($requestData['parent']);
                 if ($parent) {
                     $parent->appendNode($permission);
                 }
             }
-
-
-            // if (isset($requestData['children']) && is_array($requestData['children'])) {
-            //     dd($requestData['children']);
-            //     foreach ($requestData['children'] as $childId) {
-            //         $child = $this->permissionRepository->getDataById($childId);
-            //         if ($child) {
-            //             $permission->appendNode($child);
-            //         }
-            //     }
-            // }
- 
             DB::commit();
-
-            return redirect()
-                ->route('permissions.index')
-                ->with('message', trans('app.permissions.created'));
-        } catch (Exception $e) {
+            return redirect()->route('permissions.index')->with('message', trans('app.permissions.created'));
+        } catch (Exception $exception) {
             DB::rollBack();
-
-            return redirect()->back()->with('error', $e->getMessage())->withInput();
+            return redirect()->back()->with('error', $exception->getMessage())->withInput();
         }
     }
-
 
     /**
      * Display the specified resource.
@@ -108,14 +82,10 @@ class PermissionController extends Controller
      */
     public function edit(string $id)
     {
-        $permission = $this->permissionRepository->getDataById(decrypt($id));
+        $permissionData = $this->permissionRepository->getDataById(decrypt($id));
         $childPermissions = $this->permissionRepository->getAllData();
-        $parentPermissions = $childPermissions->whereNull('parent_id');
-        $permissions =  [
-            'parents' => $parentPermissions,
-            // 'children' => $childPermissions,
-        ];
-        return view('permission.edit', compact('permission', 'permissions'));
+        $permissions = $childPermissions->whereNull('parent_id');
+        return view('permission.edit', compact('permissionData', 'permissions'));
     }
 
     /**
@@ -153,13 +123,12 @@ class PermissionController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->permissionRepository->deleteData(decrypt($id));
             DB::Commit();
-            return redirect()->route('permissions.index')->with('message',trans('app.permissions    .deleted'));
-
-        } catch (Exception $exception){
+            return redirect()->route('permissions.index')->with('message', trans('app.permissions    .deleted'));
+        } catch (Exception $exception) {
             return redirect()->back()->with('error', $exception->getMessage())->withInput();
         }
     }

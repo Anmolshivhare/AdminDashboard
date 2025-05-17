@@ -22,13 +22,13 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    <form class="row g-3" action="{{ route('permissions.update', encrypt($permission->id)) }}" method="post">
+                    <form class="row g-3" action="{{ route('permissions.update', encrypt($permissionData->id)) }}" method="post">
                         @csrf
                         @method('PUT')
                         <div class="col-6">
                             <label for="name" class="form-label text-dark">{{ __('labels.name') }}</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
-                                id="name" placeholder="{{ __('labels.name') }}" value="{{ $permission->name ?? '' }}" />
+                                id="name" placeholder="{{ __('labels.name') }}" value="{{ $permissionData->name ?? '' }}" />
                             @error('name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -36,13 +36,13 @@
                             @enderror
                         </div>
                         <div class="col-6">
-                            @if ($permission->parent_id !== null)
+                            @if ($permissionData->parent_id !== null)
                                 <label for="name" class="form-label text-dark">{{ __('labels.select_parent') }}</label>
                                 <select class="form-select" name="parent">
                                     <option value="none" selected disabled>{{ __('labels.no_parent') }}</option>
-                                    @foreach ($permissions['parents'] as $view)
+                                    @foreach ($permissions as $view)
                                         <option value="{{ $view->id }}"
-                                            {{ $permission->parent_id == $view->id ? 'selected' : '' }}>
+                                            {{ $permissionData->parent_id == $view->id ? 'selected' : '' }}>
                                             {{ $view->name }}
                                         </option>
                                     @endforeach

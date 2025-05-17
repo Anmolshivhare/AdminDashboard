@@ -8,14 +8,12 @@ use App\Http\Controllers\ProductPriceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
-// Route::get('/logout', function () {
-//     return view('auth.login');
-// });
 Route::middleware(['auth'])->group(function () {
     Route::resource('product-prices', ProductPriceController::class);
     Route::resource('products', ProductController::class);
