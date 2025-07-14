@@ -5,13 +5,10 @@ namespace App\Http\Controllers;
 use App\DataTables\UsersDataTable;
 use App\Http\Requests\User\CreateUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
-use App\Interfaces\RoleRepositoryInterface;
-use App\Models\User;
+use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Workbench\App\Models\User as ModelsUser;
 
 class UserController extends Controller
 {
@@ -19,7 +16,7 @@ class UserController extends Controller
 
     protected $roleRepository;
 
-    public function __construct(UserRepository $userRepository, RoleRepositoryInterface $roleRepository)
+    public function __construct(UserRepository $userRepository, RoleRepository $roleRepository)
     {
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
@@ -40,7 +37,7 @@ class UserController extends Controller
     public function userProfile()
     {
         $userId = auth()->user()->id;
-        $roles = $this->roleRepository->getAllRoles();
+        $roles = $this->roleRepository->getAllData();
         $userData =  $this->userRepository->getDataById($userId);
         $userRole = $userData->roles->first();
         return view('auth.profile', compact('roles', 'userRole', 'userData'));
@@ -51,7 +48,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = $this->roleRepository->getAllRoles();
+        $roles = $this->roleRepository->getAllData();
         return view('users.create', compact('roles'));
     }
 
@@ -93,7 +90,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $roles = $this->roleRepository->getAllRoles();
+        $roles = $this->roleRepository->getAllData();
         $userData =  $this->userRepository->getDataById(decrypt($id));
         $userRole = $userData->roles->first();
         return view('users.edit', compact('roles', 'userRole', 'userData'));

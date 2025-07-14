@@ -5,14 +5,9 @@ namespace App\Http\Controllers;
 use App\DataTables\PermissionDataTable;
 use App\Http\Requests\Permission\CreatePermissionRequest;
 use App\Http\Requests\Permission\UpdatePermissionRequest;
-use App\Interfaces\PermissionRepositoryInterface;
-use App\Models\Permission;
 use App\Repositories\PermissionRepository;
-use Illuminate\Http\Request;
 use DB;
 use Exception;
-
-use function Termwind\render;
 
 class PermissionController extends Controller
 {

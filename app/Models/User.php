@@ -14,9 +14,9 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,LogsActivity,Searchable,HasRoles;
+    use HasFactory, Notifiable, LogsActivity, Searchable, HasRoles;
 
-     /**
+    /**
      * Get the name of the index associated with the model.
      */
     public function searchableAs(): string
@@ -24,7 +24,7 @@ class User extends Authenticatable
         return 'users_index';
     }
 
-     /**
+    /**
      * The attributes that should be searchable.
      *
      * @return array
@@ -42,7 +42,7 @@ class User extends Authenticatable
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logOnly(['name', 'text']);
+            ->logOnly(['name', 'text']);
         // Chain fluent methods for configuration options
     }
 
@@ -81,5 +81,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getNameAttribute($value)
+    {
+        return strtolower($value);
+    }
+
+    public function setNameAttribute($value){
+        return $this->attributes['name'] = strtoupper($value);
     }
 }
