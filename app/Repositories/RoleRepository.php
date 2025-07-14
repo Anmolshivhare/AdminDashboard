@@ -15,6 +15,8 @@ class RoleRepository extends BaseRepository
     {
         return $requestData->only([
             'name',
+            'parents',
+            'children',
         ]);
     }
 

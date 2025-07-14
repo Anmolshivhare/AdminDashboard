@@ -31,10 +31,10 @@ class RolesDataTables extends DataTable
                 $deleteRoute = route('roles.destroy', $id);
                 return view('layouts.datatable-action-button', compact('editRoute', 'deleteRoute'));
             })
-            ->addColumn('created_at', function ($row) {
+            ->editColumn('created_at', function ($row) {
                 return $row->created_at->format('Y-m-d');
             })
-            ->addColumn('updated_at', function ($row) {
+            ->editColumn('updated_at', function ($row) {
                 return $row->updated_at->format('Y-m-d');
             })
             ->setRowId('id');
@@ -59,6 +59,7 @@ class RolesDataTables extends DataTable
             ->setTableId('roles')
             ->columns($this->getColumns())
             ->minifiedAjax()
+            ->orderBy(2,'desc')
             ->parameters([
                 'processing' => true,
                 'serverSide' => true,
@@ -88,9 +89,9 @@ class RolesDataTables extends DataTable
             ->title(__('labels.id'))
             ->width(50)
             ->addClass('text-center'),
-            Column::make('name')->title(__('labels.role_name')),
-            Column::make('created_at')->title(__('labels.created_at')),
-            Column::make('updated_at')->title(__('labels.updated_at')),
+            Column::make('name')->title(__('labels.role_name'))->addClass('text-start'),
+            Column::make('created_at')->title(__('labels.created_at'))->addClass('text-start'),
+            Column::make('updated_at')->title(__('labels.updated_at'))->addClass('text-start'),
             Column::computed('action')->title(__('labels.action'))
                 ->exportable(false)
                 ->printable(false)

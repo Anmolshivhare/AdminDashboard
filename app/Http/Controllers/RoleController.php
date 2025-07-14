@@ -51,18 +51,12 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $requestData = $this->roleRepository->getRoleDataFormRequest($request);
-
         try {
-            $permissions = $this->permissionRepository->getAllPermisionFromRequest($request);
-
+            $requestData = $this->roleRepository->getRoleDataFormRequest($request);
+            $permissions = array_merge($requestData['parents'], $requestData['children']);
             DB::beginTransaction();
-            $roleData = $this->roleRepository->addData(
-                [
-                    'guard_name' => 'web',
-                    'name' => $requestData['name']
-                ]
-            );
+            $requestData['guard_name'] = GUARD_NAME;
+            $roleData = $this->roleRepository->addData($requestData);
             if (!empty($permissions)) {
                 $roleData->permissions()->sync($permissions); // Sync ensures no duplicates, and replaces existing ones
             }
@@ -105,16 +99,15 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $requestData = $this->roleRepository->getRoleDataFormRequest($request);
-
         try {
-            $permissions = $this->permissionRepository->getAllPermisionFromRequest($request);
+            $requestData = $this->roleRepository->getRoleDataFormRequest($request);
+            $permissions = array_merge($requestData['parents'], $requestData['children']);
             DB::beginTransaction();
             $role =  $this->roleRepository->updateData($id, $requestData);
             $role->name = $requestData['name'];
             $role->save();
             $role->permissions()->sync($permissions);
-         
+
             DB::commit();
 
             return redirect()

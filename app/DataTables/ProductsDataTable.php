@@ -35,10 +35,10 @@ class ProductsDataTable extends DataTable
                 return '<img src="' . asset('uploads/products/' . $row->product_pic) . '" width="50" height="50" class="img-thumbnail rounded-circle">';
             })
             ->addColumn('created_at', function ($row) {
-                return $row->created_at->format('d-M-Y h:ia');
+                return getDateAndTime($row->created_at);
             })
             ->addColumn('updated_at', function ($row) {
-                return $row->updated_at->format('d-M-Y h:ia');
+                return getDateAndTime($row->updated_at);
             })
             // ->addColumn('shop', function ($row) {
             //     return $row->shops->pluck('shop_name') ?? 'N/A';
@@ -53,7 +53,7 @@ class ProductsDataTable extends DataTable
      */
     public function query(Product $model): QueryBuilder
     {
-        return $model->newQuery()->orderBy('id', 'desc');
+        return $model->newQuery();
     }
 
     /**
@@ -66,7 +66,7 @@ class ProductsDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom('<"d-flex  my-3" B>frtip') // Place button in the toolbar
-            ->orderBy(1)
+            ->orderBy(1,'desc')
             ->selectStyleSingle()
             ->buttons([
                 Button::make('excel'),
@@ -93,6 +93,7 @@ class ProductsDataTable extends DataTable
     {
         return [
             // Column::computed('checkbox')->title('<input type="checkbox" id="select-all">')->exportable(false)->printable(false)->orderable(false)->searchable(false),
+            Column::make('created_at')->addClass('text-center'),
             Column::computed('DT_RowIndex')
                 ->title('id')
                 ->width(50)
@@ -100,7 +101,6 @@ class ProductsDataTable extends DataTable
             Column::make('name')->addClass('text-center'),
             // Column::make('shop'),
             Column::make('image')->addClass('text-center'),
-            Column::make('created_at')->addClass('text-center'),
             Column::make('updated_at')->addClass('text-center'),
             Column::make('action')
                 ->exportable(false)
